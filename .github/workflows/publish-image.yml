@@ -15,7 +15,7 @@ on:
 
 env:
   # TODO: Change variable to your image's name.
-  IMAGE_NAME: ${{github.GITHUB_REPOSITORY_NAME}}
+  IMAGE_NAME: moleculer-api-starter
 
 jobs:
   # Run tests.
