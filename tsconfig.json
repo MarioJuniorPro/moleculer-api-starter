@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "target": "es2019",
+        "module": "commonjs",
+        "lib": [
+            "es2019"
+        ],
+        "declaration": false,
+        "sourceMap": true,
+        "strict": true,
+        "baseUrl": "./",
+        "typeRoots": [
+            "node_modules/@types",
+            "@types/*"
+        ],
+        "types": [
+            "jest",
+            "node"
+        ],
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": [
+        "./src/**/*.ts",
+        "src/services/**/*.ts",
+        "./test/**/*.ts",
+        "./moleculer.config.ts",
+        "@types"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

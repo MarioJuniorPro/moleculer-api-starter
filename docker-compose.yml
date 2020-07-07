@@ -1,0 +1,93 @@
+version: "3.5"
+
+services:
+
+  api:
+    build:
+      context: .
+    image: moleculer-ts
+    env_file: docker-compose.env
+    environment:
+      SERVICES: api
+      SERVICEDIR: dist/src/services
+      PORT: 3000
+    links:
+      - nats
+      - redis
+    depends_on:
+      - nats
+      - redis
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-gw.rule=PathPrefix(`/`)"
+      - "traefik.http.services.api-gw.loadbalancer.server.port=3000"
+      - "traefik.backend=api-gw"
+
+    networks:
+      - internal
+
+  greeter:
+    build:
+      context: .
+    image: moleculer-ts
+    env_file: docker-compose.env
+    environment:
+      SERVICES: greeter
+      SERVICEDIR: dist/src/services
+    links:
+      - nats
+      - redis
+    depends_on:
+      - nats
+      - redis
+    networks:
+      - internal
+
+
+  nats:
+    image: nats
+    networks:
+      - internal
+
+  redis:
+    image: redis:alpine
+    networks:
+        - internal
+
+  traefik:
+    image: traefik:v2.2
+    container_name: traefik
+    hostname: traefik
+    restart: unless-stopped
+    healthcheck:
+      test: traefik healthcheck --ping
+    command:
+      - "--api.insecure=true" # Don't do that in production!
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+    ports:
+      - 3000:80
+      - 3001:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - internal
+      - default
+    # networks:
+    #   - internal
+    #   - default
+
+networks:
+  internal:
+
+volumes:
+  data:
+  # traefik:
+  #   image: traefik
+  #   command: --web --docker --docker.domain=docker.localhost --logLevel=INFO --docker.exposedbydefault=false
+  #   ports:
+  #     - "3000:80"
+  #     - "3001:8080"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /dev/null:/traefik.toml
