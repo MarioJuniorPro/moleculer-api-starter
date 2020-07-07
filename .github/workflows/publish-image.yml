@@ -49,9 +49,10 @@ jobs:
       - uses: actions/setup-node@v2.1.0
         with:
           node-version: '12'
-      - name: Run tests image
-      - run: npm install
-      - run: npm build
+      - name: Run npm install
+        run: npm install
+      - name: Run npm build
+        run: npm build
         
       - name: Build image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
